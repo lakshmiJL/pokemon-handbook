@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Extra Deluxe Essential Handbook</title>
+    <meta name="description" content="The ultimate digital encyclopedia for Pokémon trainers. Explore details, powers, weaknesses, and evolutions of every Pokémon.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Digital Cover -->
+        <div id="book-cover" class="cover-overlay">
+            <div class="cover-inner">
+                <img src="cover.png" alt="Handbook Cover" class="cover-img">
+                <div class="cover-text">
+                    <p>EXTRA DELUXE ESSENTIAL</p>
+                    <h1>HANDBOOK</h1>
+                    <button id="enter-btn">Open Database</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <header id="hero">
+            <div class="hero-content">
+                <h1 class="glitch" data-text="POKÉMON">POKÉMON</h1>
+                <p class="subtitle">Extra Deluxe Essential Handbook</p>
+                <div class="search-container">
+                    <input type="text" id="pokemon-search" placeholder="Search by name or ID..." autocomplete="off">
+                    <button id="search-btn">Scan</button>
+                    <div id="suggestions" class="suggestions-box"></div>
+                </div>
+
+            </div>
+        </header>
+
+
+        <!-- Main Content -->
+        <main>
+            <section id="registry">
+                <div class="section-header">
+                    <h2>Pokémon Registry</h2>
+                    <div class="header-actions">
+                        <button id="fullscreen-btn" class="header-btn">Full Screen Mode</button>
+                        <div class="filters">
+                            <select id="type-filter">
+                                <option value="all">All Types</option>
+                                <!-- Types will be populated via JS -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pokemon-grid" class="grid">
+                    <!-- Cards will be injected here -->
+                    <div class="loader">Initialising Pokédex...</div>
+                </div>
+                <div class="pagination">
+                    <button id="load-more">Load More</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Detail Modal -->
+        <div id="detail-modal" class="modal hidden">
+            <div class="modal-overlay"></div>
+            <div class="modal-container">
+                <button class="close-modal">&times;</button>
+                <div id="modal-content">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Pokémon Deluxe Handbook | Powered by PokéAPI</p>
+            <button id="reset-book" class="footer-btn">Reset Handbook</button>
+        </footer>
+
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
