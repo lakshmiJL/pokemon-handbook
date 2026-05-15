@@ -18,6 +18,12 @@ const limit = 20;
 let allPokemon = [];
 let allNames = [];
 
+// Particle System Variables
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+
 
 const TYPE_COLORS = {
     fire: '#ff4422', water: '#3399ff', grass: '#77cc55', electric: '#ffcc33',
@@ -29,13 +35,20 @@ const TYPE_COLORS = {
 
 // Initialize
 async function init() {
+    initParticles();
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animateParticles();
+
     await fetchAllNames();
     await fetchTypes();
     await fetchPokemon();
     
     enterBtn.addEventListener('click', () => {
+        playSynthSound(440, 'square', 0.1);
         bookCover.classList.add('hidden');
     });
+
 
     resetBtn.addEventListener('click', () => {
         bookCover.classList.remove('hidden');
@@ -107,11 +120,13 @@ function handleInput() {
         // Add click events to suggestions
         document.querySelectorAll('.suggestion-item').forEach(item => {
             item.addEventListener('click', () => {
+                playSynthSound(1000, 'square', 0.05);
                 searchInput.value = item.textContent;
                 suggestionsBox.classList.remove('active');
                 handleSearch();
             });
         });
+
     } else {
         suggestionsBox.classList.remove('active');
     }
@@ -172,9 +187,13 @@ function displayPokemonCard(pokemon) {
         </div>
     `;
     
-    card.addEventListener('click', () => showDetails(pokemon));
+    card.addEventListener('click', () => {
+        playSynthSound(660, 'sine', 0.1);
+        showDetails(pokemon);
+    });
     pokemonGrid.appendChild(card);
 }
+
 
 async function handleSearch() {
     const query = searchInput.value.toLowerCase().trim();
@@ -333,11 +352,72 @@ async function getTypeRelations(types) {
 }
 
 
+// Futuristic SFX using Web Audio API
+function playSynthSound(freq = 440, type = 'sine', duration = 0.1) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(freq * 2, audioCtx.currentTime + duration);
+
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + duration);
+}
+
+// Particle System Logic
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+function initParticles() {
+    particles = [];
+    for (let i = 0; i < 100; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5,
+            opacity: Math.random()
+        });
+    }
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    requestAnimationFrame(animateParticles);
+}
+
 window.jumpToPokemon = async function(name) {
+    playSynthSound(880, 'square', 0.05);
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
     const details = await res.json();
     showDetails(details);
 }
 
 init();
+
 

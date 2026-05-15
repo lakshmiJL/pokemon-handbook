@@ -43,7 +43,43 @@ body {
 
 #app {
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
+
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #050507;
+}
+
+.scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 3000;
+    pointer-events: none;
+    opacity: 0.1;
+    animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+}
+
 
 /* Cover Overlay */
 .cover-overlay {
@@ -329,23 +365,49 @@ h2 {
 }
 
 .pokemon-card {
-    background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     padding: 30px;
     text-align: center;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+.pokemon-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 55%,
+        transparent 100%
+    );
+    transform: rotate(30deg);
+    transition: 0.8s;
+    pointer-events: none;
+}
+
+.pokemon-card:hover::after {
+    left: 50%;
+    top: 50%;
 }
 
 .pokemon-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.05) translateY(-10px);
     border-color: var(--accent);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 30px rgba(255, 28, 28, 0.2);
 }
+
 
 .card-img {
     width: 150px;
